@@ -30,10 +30,13 @@ COPY files/php/php.ini /etc/php/8.2/apache2/php.ini
 COPY files/mariadb/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
 
 # copy the supervisor configuration file
-COPY files/supervisor/supervisord.conf /etc/supervisor/supervisord.conf
+COPY files/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # create mysql socket directory
 RUN mkdir /var/run/mysqld && chown mysql:mysql /var/run/mysqld
+
+# copy the configuration file for wordpress from files/ directory
+COPY files/wp-config.php /var/www/html/wordpress/wp-config.php
 
 EXPOSE 80
 
