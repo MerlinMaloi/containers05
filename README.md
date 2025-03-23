@@ -108,15 +108,16 @@ PS F:\containers05> docker container rm apache2-php-mariadb
 apache2-php-mariadb
 ```
 
-#### 7. Настройка конфигурационных файлов
+#### 7. **Настройка конфигурационных файлов**
 
-- Откройте файл files/apache2/000-default.conf, найдите строку #ServerName www.example.com и замените её на ServerName localhost.
-Найдите строку ServerAdmin webmaster@localhost и замените в ней почтовый адрес на свой.
-После строки DocumentRoot /var/www/html добавьте следующие строки:
-DirectoryIndex index.php index.html
-Сохраните файл и закройте.
-В конце файла files/apache2/apache2.conf добавьте следующую строку:
-ServerName localhost
+    1. Конфигурационный файл apache2
+
+- Открыл файл `files/apache2/000-default.conf`, отыскал строку `#ServerName www.example.com` и заменил её на `ServerName` localhost.
+Нашел строку `ServerAdmin webmaster@localhost` и заменил в ней почтовый адрес на свой.
+После строки `DocumentRoot /var/www/html` добавил следующee `DirectoryIndex index.php index.html`
+Сохранил файл и закрыл.
+В конце файла `files/apache2/apache2.conf` добавил строку: `ServerName localhost`
+
 
 
 
