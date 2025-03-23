@@ -20,14 +20,14 @@
 
 ### Выполнение
 
-1. Создал репозиторий `containers05` и склонировал его себе на комп:
+#### 1. Создал репозиторий `containers05` и склонировал его себе на комп:
 
-2. Создал в папке `containers05` папку `files`, а также: 
+#### 2. Создал в папке `containers05` папку `files`, а также: 
 - папку `files/apache2` - для файлов конфигурации `apache2`;
 - папку `files/php` - для файлов конфигурации `php`;
 - папку `files/mariadb` - для файлов конфигурации `mariadb`.
 
-3. Создал файл `Dockerfile` в папке `containers05` со следующим содержимым:
+#### 3. Создал файл `Dockerfile` в папке `containers05` со следующим содержимым:
 
 ```
 # create from debian image
@@ -39,7 +39,7 @@ RUN apt-get update && \
     apt-get clean
 ```
 
-4. Построил образ контейнера с именем `apache2-php-mariadb`:
+#### 4. Построил образ контейнера с именем `apache2-php-mariadb`:
 
 ```
 PS F:\containers05> docker build -t apache2-php-mariadb .
@@ -65,7 +65,7 @@ PS F:\containers05> docker build -t apache2-php-mariadb .
  => => unpacking to docker.io/library/apache2-php-mariadb:latest     
 ```
 
-5. Создал контейнер apache2-php-mariadb из образа apache2-php-mariadb
+#### 5. Создал контейнер apache2-php-mariadb из образа apache2-php-mariadb
 
 ```
 docker container create --name apache2-php-mariadb apache2-php-mariadb 
@@ -87,7 +87,7 @@ PS F:\containers05> docker container run -d --name apache2-php-mariadb apache2-p
 4565af7653ec50c167069fb940d7863a3bd0696eae0197b7fd221a450212c27d
 ```
 
-6. Скопировал из контейнера файлы конфигурации `apache2`, `php`, `mariadb` в папку `files/` на компьютер, применив следующие команды:
+#### 6. Скопировал из контейнера файлы конфигурации `apache2`, `php`, `mariadb` в папку `files/` на компьютер, применив следующие команды:
 
 ```
 PS F:\containers05> docker cp apache2-php-mariadb:/etc/apache2/sites-available/000-default.conf files/apache2/
@@ -108,7 +108,7 @@ PS F:\containers05> docker container rm apache2-php-mariadb
 apache2-php-mariadb
 ```
 
-## 7. Настройка конфигурационных файлов
+#### 7. Настройка конфигурационных файлов
 
 - Откройте файл files/apache2/000-default.conf, найдите строку #ServerName www.example.com и замените её на ServerName localhost.
 Найдите строку ServerAdmin webmaster@localhost и замените в ней почтовый адрес на свой.
