@@ -110,18 +110,15 @@ apache2-php-mariadb
 
 #### 7. **Настройка конфигурационных файлов**
 
-    1. Конфигурационный файл apache2
+7.1. **Конфигурационный файл apache2**
 
 - Открыл файл `files/apache2/000-default.conf`, отыскал строку `#ServerName www.example.com` и заменил её на `ServerName` localhost.
-Нашел строку `ServerAdmin webmaster@localhost` и заменил в ней почтовый адрес на свой.
-После строки `DocumentRoot /var/www/html` добавил следующee `DirectoryIndex index.php index.html`
-Сохранил файл и закрыл.
-В конце файла `files/apache2/apache2.conf` добавил строку: `ServerName localhost`
+- Нашел строку `ServerAdmin webmaster@localhost` и заменил в ней почтовый адрес на свой.
+- После строки `DocumentRoot /var/www/html` добавил следующee `DirectoryIndex index.php index.html`
+- Сохранил файл и закрыл.
+- В конце файла `files/apache2/apache2.conf` добавил строку: `ServerName localhost`
 
-
-
-
-
+```
 <VirtualHost *:80>
 	# The ServerName directive sets the request scheme, hostname and port that
 	# the server uses to identify itself. This is used when creating
@@ -136,15 +133,79 @@ apache2-php-mariadb
 	DocumentRoot /var/www/html
 	DirectoryIndex index.php index.html
 
-
-
-
-
 files/apache2/apache2.conf
 
 ServerName localhost
+```
 
+7.2. **Конфигурационный файл php**
 
+- В файле `files/php/php.ini` строку `;error_log = php_errors.log `и заменил её на `error_log = /var/log/php_errors.log`.
+- Настроил параметры `memory_limit`, `upload_max_filesize`, `post_max_size` и `max_execution_time` следующим образом:
+    - `memory_limit = 128M`
+    - `upload_max_filesize = 128M`
+    - `post_max_size = 128M`
+    - `max_execution_time = 120`
+
+7.3. **Конфигурационный файл mariadb** 
+
+- Открыл файл `files/mariadb/50-server.cnf`, нашел строку `#log_error = /var/log/mysql/error.log` и раскомментировал её.
+- Сохранил файл
+
+#### 8.  Создание скрипта запуска
+
+Создал в папке `files` папку `supervisor` и файл `supervisord.conf` со следующим содержимым:
+
+```
+[supervisord]
+nodaemon=true
+logfile=/dev/null
+user=root
+
+# apache2
+[program:apache2]
+command=/usr/sbin/apache2ctl -D FOREGROUND
+autostart=true
+autorestart=true
+startretries=3
+stderr_logfile=/proc/self/fd/2
+user=root
+
+# mariadb
+[program:mariadb]
+command=/usr/sbin/mariadbd --user=mysql
+autostart=true
+autorestart=true
+startretries=3
+stderr_logfile=/proc/self/fd/2
+user=mysql
+```
+
+#### 9. Создание Dockerfile
+
+- Открыл файл `Dockerfile` и добавил:
+    - после инструкции `FROM ...` монтирование томов:
+    ```
+    # mount volume for mysql data
+    VOLUME /var/lib/mysql
+
+    # mount volume for logs
+    VOLUME /var/log
+    ```
+    - в инструкции RUN ... добавьте установку пакета supervisor.
+    ```
+    Dockerfile
+    RUN apt-get update && \
+        apt-get install -y apache2 php libapache2-mod-php php-mysql mariadb-server supervisor && \
+        apt-get clean
+    ```
+    - после инструкции RUN ... добавьте копирование и распаковку сайта WordPress:
+    ```
+    Dockerfile
+    # add wordpress files to /var/www/html
+    ADD https://wordpress.org/latest.tar.gz /var/www/html/
+    RUN tar xf /var/www/html/latest.tar.gz -C /var/www/html/
+    ```
 
 
 
