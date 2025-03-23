@@ -18,9 +18,30 @@
 
 ## Описание выполнения работы с ответами на вопросы
 
-### 1. Создал репозиторий containers05 и склонировал его себе на комп:
+#### Выполнение
 
-2.
+1. Создал репозиторий `containers05` и склонировал его себе на комп:
+
+2. Создал в папке `containers05` папку `files`, а также: 
+- папку `files/apache2` - для файлов конфигурации `apache2`;
+- папку `files/php` - для файлов конфигурации `php`;
+- папку `files/mariadb` - для файлов конфигурации `mariadb`.
+
+3. Создал файл `Dockerfile` в папке `containers05` со следующим содержимым:
+
+```
+# create from debian image
+FROM debian:latest
+
+# install apache2, php, mod_php for apache2, php-mysql and mariadb
+RUN apt-get update && \
+    apt-get install -y apache2 php libapache2-mod-php php-mysql mariadb-server && \
+    apt-get clean
+```
+
+4. Построил образ контейнера с именем `apache2-php-mariadb`:
+
+```
 PS F:\containers05> docker build -t apache2-php-mariadb .
 [+] Building 195.1s (7/7) FINISHED                                                                                                        docker:desktop-linux
  => [internal] load build definition from Dockerfile                                                                                                      0.4s
@@ -42,24 +63,33 @@ PS F:\containers05> docker build -t apache2-php-mariadb .
  => => exporting manifest list sha256:62c45a297f5e23dc7ea9eec7c20c05c1c54681d5a53c36315639fd30e898d27a                                                    0.0s 
  => => naming to docker.io/library/apache2-php-mariadb:latest                                                                                             0.1s 
  => => unpacking to docker.io/library/apache2-php-mariadb:latest     
+```
 
+5. Создал контейнер apache2-php-mariadb из образа apache2-php-mariadb
 
-
-
- docker container create --name apache2-php-mariadb apache2-php-mariadb 
+```
+docker container create --name apache2-php-mariadb apache2-php-mariadb 
 13c3f24fd756d0f2e10e1e32185833c0c19e310e4fac4f4559492aad7b2c1492
+```
 
+*Попроборвал исправить команду так как не использовал фоновый флаг и без команды запуска bash:*
 
+```
 docker container run -d --name apache2-php-mariadb apache2-php-mariadb bash
 docker: Error response from daemon: Conflict. The container name "/apache2-php-mariadb" is already in use by container "13c3f24fd756d0f2e10e1e32185833c0c19e310e4fac4f4559492aad7b2c1492". You have to remove (or rename) that container to be able to reuse that name.
 See 'docker run --help'.
+```
 
-удалил через интерфейс докера
+*Удалил через интерфейс докера неправильный контейнер и исправил команду*
 
+```
 PS F:\containers05> docker container run -d --name apache2-php-mariadb apache2-php-mariadb bash  
 4565af7653ec50c167069fb940d7863a3bd0696eae0197b7fd221a450212c27d
+```
 
+6. Скопировал из контейнера файлы конфигурации `apache2`, `php`, `mariadb` в папку `files/` на компьютер, применив следующие команды:
 
+```
 PS F:\containers05> docker cp apache2-php-mariadb:/etc/apache2/sites-available/000-default.conf files/apache2/
 >> docker cp apache2-php-mariadb:/etc/apache2/apache2.conf files/apache2/
 >> docker cp apache2-php-mariadb:/etc/php/8.2/apache2/php.ini files/php/
@@ -68,10 +98,25 @@ Successfully copied 3.07kB to F:\containers05\files\apache2\
 Successfully copied 9.22kB to F:\containers05\files\apache2\
 Successfully copied 75.8kB to F:\containers05\files\php\
 Successfully copied 5.63kB to F:\containers05\files\mariadb\
+```
+*появились файлы конфигурации apache2, php, mariadb*
 
+Остановливаем и удаляем контейнер apache2-php-mariadb
+
+```
 PS F:\containers05> docker container rm apache2-php-mariadb 
 apache2-php-mariadb
+```
 
+7. **Настройка конфигурационных файлов**
+
+- Откройте файл files/apache2/000-default.conf, найдите строку #ServerName www.example.com и замените её на ServerName localhost.
+Найдите строку ServerAdmin webmaster@localhost и замените в ней почтовый адрес на свой.
+После строки DocumentRoot /var/www/html добавьте следующие строки:
+DirectoryIndex index.php index.html
+Сохраните файл и закройте.
+В конце файла files/apache2/apache2.conf добавьте следующую строку:
+ServerName localhost
 
 
 
