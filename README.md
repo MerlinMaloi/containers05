@@ -110,7 +110,7 @@ apache2-php-mariadb
 
 #### 7. **Настройка конфигурационных файлов**
 
-    1. Конфигурационный файл apache2
+    7.1. Конфигурационный файл apache2
 
 - Открыл файл `files/apache2/000-default.conf`, отыскал строку `#ServerName www.example.com` и заменил её на `ServerName` localhost.
 Нашел строку `ServerAdmin webmaster@localhost` и заменил в ней почтовый адрес на свой.
