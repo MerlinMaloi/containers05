@@ -18,7 +18,7 @@
 
 ## Описание выполнения работы с ответами на вопросы
 
-#### Выполнение
+### Выполнение
 
 1. Создал репозиторий `containers05` и склонировал его себе на комп:
 
@@ -108,7 +108,7 @@ PS F:\containers05> docker container rm apache2-php-mariadb
 apache2-php-mariadb
 ```
 
-7. **Настройка конфигурационных файлов**
+## 7. Настройка конфигурационных файлов
 
 - Откройте файл files/apache2/000-default.conf, найдите строку #ServerName www.example.com и замените её на ServerName localhost.
 Найдите строку ServerAdmin webmaster@localhost и замените в ней почтовый адрес на свой.
